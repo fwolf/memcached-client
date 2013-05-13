@@ -104,7 +104,30 @@ class Memcached {
 	 *
 	 * @var	array
 	 */
-	protected $aOption = array();
+	protected $aOption = array(
+		Memcached::OPT_COMPRESSION	=> true,
+		Memcached::OPT_SERIALIZER	=> Memcached::SERIALIZER_PHP,
+		Memcached::OPT_PREFIX_KEY	=> '',
+		Memcached::OPT_HASH			=> Memcached::HASH_DEFAULT,
+		Memcached::OPT_DISTRIBUTION	=> Memcached::DISTRIBUTION_MODULA,
+		Memcached::OPT_LIBKETAMA_COMPATIBLE	=> false,
+		Memcached::OPT_BUFFER_WRITES	=> false,
+		Memcached::OPT_BINARY_PROTOCOL	=> false,
+		Memcached::OPT_NO_BLOCK		=> false,
+		Memcached::OPT_TCP_NODELAY	=> false,
+
+		// This two is a value by guess
+		Memcached::OPT_SOCKET_SEND_SIZE	=> 32767,
+		Memcached::OPT_SOCKET_RECV_SIZE	=> 65535,
+
+		Memcached::OPT_CONNECT_TIMEOUT	=> 1000,
+		Memcached::OPT_RETRY_TIMEOUT	=> 0,
+		Memcached::OPT_SEND_TIMEOUT		=> 0,
+		Memcached::OPT_RECV_TIMEOUT		=> 0,
+		Memcached::OPT_POLL_TIMEOUT		=> 1000,
+		Memcached::OPT_CACHE_LOOKUPS	=> false,
+		Memcached::OPT_SERVER_FAILURE_LIMIT	=> 0,
+	);
 
 
 	/**
