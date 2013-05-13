@@ -234,6 +234,34 @@ class Memcached {
 
 
 	/**
+	 * Retrieve an item
+	 *
+	 * @param	string	$key
+	 * @param	callable	$cache_cb		Ignored
+	 * @param	float	$cas_token			Ignored
+	 * @return	mixed
+	 */
+	public function get ($key, $cache_cb = null, $cas_token = null) {
+		$this->SocketWrite('get ' . addslashes($key) . "\r\n");
+
+		$s_result = '';
+		$s = '';
+		$s = $this->SocketRead();
+
+		if ('VALUE' != substr($s, 0, 5))
+			return false;
+		else {
+			do {
+				$s = $this->SocketRead();
+				$s_result .= $s;
+			} while ('END' != $s);
+		}
+
+		return $s_result;
+	} // end of func get
+
+
+	/**
 	 * Get a memcached option value
 	 *
 	 * @param	int		$option
@@ -256,6 +284,24 @@ class Memcached {
 	public function getServerList () {
 		return $this->aServer;
 	} // end of func getServerList
+
+
+	/**
+	 * Store an item
+	 *
+	 * @param	string	$key
+	 * @param	mixed	$val
+	 * @param	int		$expt
+	 * @return	boolean
+	 */
+	public function set ($key, $val, $expt = 0) {
+		$this->SocketWrite('set ' . addslashes($key) . ' 0 '
+			. $expt . ' ' . strlen($val) . "\r\n");
+		$this->SocketWrite($val . "\r\n");
+
+		$s = $this->SocketRead();
+		return ('STORED' == $s);
+	} // end of func set
 
 
 	/**
@@ -301,7 +347,7 @@ class Memcached {
 	 * @return	mixed
 	 */
 	protected function SocketWrite ($cmd, $result = false) {
-		fwrite($this->rSocket, $cmd . "\n");
+		fwrite($this->rSocket, $cmd . "\r\n");
 
 		if (true == $result)
 			return $this->SocketRead();
