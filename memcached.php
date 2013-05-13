@@ -100,12 +100,12 @@ class Memcached {
 
 
 	/**
-	 * Socks connect handle
+	 * Socket connect handle
 	 *
 	 * This tool only connect to first host
 	 * @var	resource
 	 */
-	protected $rSock = null;
+	protected $rSocket = null;
 
 
 	/**
@@ -180,7 +180,7 @@ class Memcached {
 	 * @return	boolean
 	 */
 	protected function Connect () {
-		if (!empty($this->rSock))
+		if (!empty($this->rSocket))
 			return false;
 
 		if (empty($this->aServers))
@@ -190,9 +190,9 @@ class Memcached {
 		$ar = array_shift($ar);
 		$error = 0;
 		$errstr = '';
-		$this->rSock = fsockopen($ar['host'], $ar['port'], $error, $errstr);
+		$this->rSocket = fsockopen($ar['host'], $ar['port'], $error, $errstr);
 
-		if (false === $this->rSock) {
+		if (false === $this->rSocket) {
 			error_log('Connect to ' . $ar['host'] . ':' . $ar['port']
 				. " error:\n\t[" . $error . '] ' . $errstr);
 			return false;
@@ -211,6 +211,33 @@ class Memcached {
 	public function getServerList () {
 		return $this->aServer;
 	} // end of func getServerList
+
+
+	/**
+	 * Read from socket
+	 *
+	 * @return	string
+	 */
+	protected function SocketRead () {
+		return trim(fgets($this->rSocket));
+	} // end of func SocketRead
+
+
+	/**
+	 * Write data to socket
+	 *
+	 * @param	string	$cmd
+	 * @param	boolean	$result		Need result/response
+	 * @return	mixed
+	 */
+	protected function SocketWrite ($cmd, $result = false) {
+		fwrite($this->rSocket, $cmd . "\n");
+
+		if (true == $result)
+			return $this->SocketRead();
+
+		return true;
+	} // end of func SocketWrite
 
 
 } // end of class Memcached
