@@ -191,13 +191,14 @@ class Memcached {
 	 */
 	public function addServers ($servers) {
 		foreach ((array)$servers as $svr) {
-			// Fill array element
-			if (1 == count($svr))
-				$svr = array_merge($svr, array(11211, 0));
-			elseif (2 == count($svr))
-				$svr = array_merge($svr, array(0));
+			$host = array_shift($svr);
+			$port = array_shift($svr);
+			if (false === $port)
+				$port = 11211;
+			$weight = array_shift($svr);
+			if (false === $weight)
+				$weight = 0;
 
-			list($host, $port, $weight) = $svr;
 			$this->addServer($host, $port, $weight);
 		}
 
@@ -211,13 +212,13 @@ class Memcached {
 	 * @return	boolean
 	 */
 	protected function Connect () {
-		if (!empty($this->rSocket))
+		if ($this->rSocket)
 			return false;
 
-		if (empty($this->aServers))
+		if (empty($this->aServer))
 			return false;
 
-		$ar = $this->aServers;
+		$ar = $this->aServer;
 		$ar = array_shift($ar);
 		$error = 0;
 		$errstr = '';
