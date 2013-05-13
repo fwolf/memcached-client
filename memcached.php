@@ -99,5 +99,80 @@ class Memcached {
 	const RES_PAYLOAD_FAILURE = -1001;
 
 
+	/**
+	 * Server list array/pool
+	 *
+	 * I added array index.
+	 *
+	 * array (
+	 * 	host:port:weight => array(
+	 * 		host,
+	 * 		port,
+	 * 		weight,
+	 * 	)
+	 * )
+	 *
+	 * @var	array
+	 */
+	protected $aServer = array();
+
+
+	/**
+	 * Add a serer to the server pool
+	 *
+	 * @param	string	$host
+	 * @param	int		$port
+	 * @param	int		$weight
+	 * @return	boolean
+	 */
+	public function addServer ($host, $port = 11211, $weight = 0) {
+		$key = $host . ':' . strval($port) . ':' . strval($weight);
+		if (isset($this->aServer[$key]))
+			// Dup
+			return false;
+		else {
+			$this->aServer[] = array(
+				'host'	=> $host,
+				'port'	=> $port,
+				'weight'	=> $weight,
+			);
+			return true;
+		}
+	} // end of fund addServer
+
+
+	/**
+	 * Add multiple servers to the server pool
+	 *
+	 * @param	array	$servers
+	 * @return	boolean
+	 */
+	public function addServers ($servers) {
+		foreach ((array)$servers as $svr) {
+			// Fill array element
+			if (1 == count($svr))
+				$svr = array_merge($svr, array(11211, 0));
+			elseif (2 == count($svr))
+				$svr = array_merge($svr, array(0));
+
+			list($host, $port, $weight) = $svr;
+			$this->addServer($host, $port, $weight);
+		}
+
+		return true;
+	} // end of func addServers
+
+
+	/**
+	 * Get list array of servers
+	 *
+	 * @see		$aServer
+	 * @return	array
+	 */
+	public function getServerList () {
+		return $this->aServer;
+	} // end of func getServerList
+
+
 } // end of class Memcached
 ?>
