@@ -100,12 +100,11 @@ class Memcached {
 
 
 	/**
-	 * Socket connect handle
+	 * Dummy option array
 	 *
-	 * This tool only connect to first host
-	 * @var	resource
+	 * @var	array
 	 */
-	protected $rSocket = null;
+	protected $aOption = array();
 
 
 	/**
@@ -124,6 +123,15 @@ class Memcached {
 	 * @var	array
 	 */
 	protected $aServer = array();
+
+
+	/**
+	 * Socket connect handle
+	 *
+	 * This tool only connect to first host
+	 * @var	resource
+	 */
+	protected $rSocket = null;
 
 
 	/**
@@ -203,6 +211,20 @@ class Memcached {
 
 
 	/**
+	 * Get a memcached option value
+	 *
+	 * @param	int		$option
+	 * @return	mixed
+	 */
+	public function getOption ($option) {
+		if (isset($this->aOption[$option]))
+			return $this->aOption[$option];
+		else
+			return false;
+	} // end of func getOption
+
+
+	/**
 	 * Get list array of servers
 	 *
 	 * @see		$aServer
@@ -211,6 +233,31 @@ class Memcached {
 	public function getServerList () {
 		return $this->aServer;
 	} // end of func getServerList
+
+
+	/**
+	 * Set a memcached option
+	 *
+	 * @param	int		$option
+	 * @param	mixed	$value
+	 * @return	boolean
+	 */
+	public function setOption ($option, $value) {
+		$this->aOption[$option] = $value;
+		return true;
+	} // end of func setOption
+
+
+	/**
+	 * Set memcached options
+	 *
+	 * @param	array	$options
+	 * @return	bollean
+	 */
+	public function setOptions ($options) {
+		$this->aOption = array_merge($this->aOption, $options);
+		return true;
+	} // end of func setOptions
 
 
 	/**
