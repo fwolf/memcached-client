@@ -100,6 +100,15 @@ class Memcached {
 
 
 	/**
+	 * Socks connect handle
+	 *
+	 * This tool only connect to first host
+	 * @var	resource
+	 */
+	protected $rSock = null;
+
+
+	/**
 	 * Server list array/pool
 	 *
 	 * I added array index.
@@ -136,6 +145,8 @@ class Memcached {
 				'port'	=> $port,
 				'weight'	=> $weight,
 			);
+
+			$this->Connect();
 			return true;
 		}
 	} // end of fund addServer
@@ -161,6 +172,34 @@ class Memcached {
 
 		return true;
 	} // end of func addServers
+
+
+	/**
+	 * Connect to first server
+	 *
+	 * @return	boolean
+	 */
+	protected function Connect () {
+		if (!empty($this->rSock))
+			return false;
+
+		if (empty($this->aServers))
+			return false;
+
+		$ar = $this->aServers;
+		$ar = array_shift($ar);
+		$error = 0;
+		$errstr = '';
+		$this->rSock = fsockopen($ar['host'], $ar['port'], $error, $errstr);
+
+		if (false === $this->rSock) {
+			error_log('Connect to ' . $ar['host'] . ':' . $ar['port']
+				. " error:\n\t[" . $error . '] ' . $errstr);
+			return false;
+		}
+		else
+			return true;
+	} // end of func Connect
 
 
 	/**
