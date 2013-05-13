@@ -276,6 +276,26 @@ class Memcached {
 
 
 	/**
+	 * (Dummy) Return the result code of the last operation
+	 *
+	 * @return	int
+	 */
+	public function getResultCode () {
+		return Memcached::RES_SUCCESS;
+	} // end of func getResultCode
+
+
+	/**
+	 * (Dummy) Return the message describing the result of the last opteration
+	 *
+	 * @return	string
+	 */
+	public function getResultMessage () {
+		return '';
+	} // end of func getResultMessage
+
+
+	/**
 	 * Get list array of servers
 	 *
 	 * @see		$aServer
