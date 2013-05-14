@@ -267,7 +267,7 @@ class Memcached {
 	 * @return	boolean
 	 */
 	public function delete ($key, $time = 0) {
-		$this->SocketWrite('delete' . addslashes($key));
+		$this->SocketWrite('delete ' . addslashes($key));
 
 		$s = $this->SocketRead();
 		if ('DELETED' == $s) {
