@@ -167,7 +167,7 @@ class Memcached {
 	/**
 	 * Socket connect handle
 	 *
-	 * This tool only connect to first host
+	 * Point to last successful connect, ignore others
 	 * @var	resource
 	 */
 	protected $rSocket = null;
@@ -226,29 +226,29 @@ class Memcached {
 
 
 	/**
-	 * Connect to first server
+	 * Connect to memcached server
 	 *
 	 * @return	boolean
 	 */
 	protected function Connect () {
-		if ($this->rSocket)
-			return false;
+		$rs = false;
 
-		if (empty($this->aServer))
-			return false;
+		foreach ((array)$this->aServer as $svr) {
+			$error = 0;
+			$errstr = '';
+			$rs = @fsockopen($svr['host'], $svr['port'], $error, $errstr);
+			if ($rs)
+				$this->rSocket = $rs;
+			else {
+				$s = 'Connect to ' . $svr['host'] . ':' . $svr['port']
+					. " error:\n\t[" . $error . '] ' . $errstr;
+				error_log($s);
+			}
+		}
 
-		$ar = $this->aServer;
-		$ar = array_shift($ar);
-		$error = 0;
-		$errstr = '';
-		$this->rSocket = @fsockopen($ar['host'], $ar['port'], $error, $errstr);
-
-		if (false === $this->rSocket) {
-			$s = 'Connect to ' . $ar['host'] . ':' . $ar['port']
-				. " error:\n\t[" . $error . '] ' . $errstr;
-			error_log($s);
+		if (is_null($this->rSocket)) {
 			$this->iResultCode = Memcached::RES_FAILURE;
-			$this->sResultMessage = $s;
+			$this->sResultMessage = 'No server avaliable.';
 			return false;
 		}
 		else {
@@ -267,7 +267,7 @@ class Memcached {
 	 * @return	boolean
 	 */
 	public function delete ($key, $time = 0) {
-		$this->SocketWrite('delete' . addslashes($key) . "\r\n");
+		$this->SocketWrite('delete' . addslashes($key));
 
 		$s = $this->SocketRead();
 		if ('DELETED' == $s) {
@@ -292,7 +292,7 @@ class Memcached {
 	 * @return	mixed
 	 */
 	public function get ($key, $cache_cb = null, $cas_token = null) {
-		$this->SocketWrite('get ' . addslashes($key) . "\r\n");
+		$this->SocketWrite('get ' . addslashes($key));
 
 		$s_result = '';
 		$s = '';
@@ -377,8 +377,8 @@ class Memcached {
 	 */
 	public function set ($key, $val, $expt = 0) {
 		$this->SocketWrite('set ' . addslashes($key) . ' 0 '
-			. $expt . ' ' . strlen($val) . "\r\n");
-		$this->SocketWrite($val . "\r\n");
+			. $expt . ' ' . strlen($val));
+		$this->SocketWrite($val);
 
 		$s = $this->SocketRead();
 		if ('STORED' == $s) {
@@ -425,6 +425,9 @@ class Memcached {
 	 * @return	string
 	 */
 	protected function SocketRead () {
+		if (is_null($this->rSocket))
+			return '';
+
 		return trim(fgets($this->rSocket));
 	} // end of func SocketRead
 
@@ -437,6 +440,9 @@ class Memcached {
 	 * @return	mixed
 	 */
 	protected function SocketWrite ($cmd, $result = false) {
+		if (is_null($this->rSocket))
+			return false;
+
 		fwrite($this->rSocket, $cmd . "\r\n");
 
 		if (true == $result)
