@@ -34,8 +34,8 @@ Supported method:
 -	delete
 -	get
 -	getOption
--	getResultCode (dummy)
--	getResultMessage (dummy)
+-	getResultCode
+-	getResultMessage
 -	getServerList
 -	set
 -	setOption
