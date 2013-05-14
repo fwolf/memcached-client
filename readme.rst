@@ -31,6 +31,7 @@ Supported method:
 
 -	addServer
 -	addServers
+-	delete
 -	get
 -	getOption
 -	getResultCode (dummy)

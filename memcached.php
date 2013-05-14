@@ -235,6 +235,21 @@ class Memcached {
 
 
 	/**
+	 * Delete an item
+	 *
+	 * @param	string	$key
+	 * @param	int		$time		Ignored
+	 * @return	boolean
+	 */
+	public function delete ($key, $time = 0) {
+		$this->SocketWrite('delete' . addslashes($key) . "\r\n");
+
+		$s = $this->SocketRead();
+		return ('DELETED' == $s);
+	} // end of func delete
+
+
+	/**
 	 * Retrieve an item
 	 *
 	 * @param	string	$key
