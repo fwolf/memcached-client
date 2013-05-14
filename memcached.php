@@ -369,6 +369,17 @@ class Memcached {
 
 
 	/**
+	 * Got item key
+	 *
+	 * @param	string	$key
+	 * @return	string
+	 */
+	public function Key ($key) {
+		return addslashes($this->aOption[Memcached::OPT_PREFIX_KEY]) . $key;
+	} // end of func Key
+
+
+	/**
 	 * Store an item
 	 *
 	 * @param	string	$key
