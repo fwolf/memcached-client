@@ -304,10 +304,11 @@ class Memcached {
 			return false;
 		}
 		else {
-			do {
-				$s = $this->SocketRead();
+			$s = $this->SocketRead();
+			while ('END' != $s) {
 				$s_result .= $s;
-			} while ('END' != $s);
+				$s = $this->SocketRead();
+			}
 			$this->iResultCode = Memcached::RES_SUCCESS;
 			$this->sResultMessage = '';
 		}
