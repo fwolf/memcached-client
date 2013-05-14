@@ -12,3 +12,30 @@ As there has no php memcached extension for windows now, it's difficult to
 build develop envionment, so this class will be helpful.
 
 Inspried by: http://github.com/joonas-fi/xslib-memcached
+
+
+Usage:
+
+Just as php_memcached extension, new Memcached object and etc.
+
+::
+
+	$m = new Memcached();
+	$m->addServrer('localhost', 11211);
+
+	$m->set('foo', 'bar');
+	$m->get('foo');
+
+
+Supported method:
+
+-	addServer
+-	addServers
+-	get
+-	getOption
+-	getResultCode (dummy)
+-	getResultMessage (dummy)
+-	getServerList
+-	set
+-	setOption
+-	setOptions
