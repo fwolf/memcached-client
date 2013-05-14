@@ -21,7 +21,7 @@ Just as php_memcached extension, new Memcached object and etc.
 ::
 
 	$m = new Memcached();
-	$m->addServrer('localhost', 11211);
+	$m->addServer('localhost', 11211);
 
 	$m->set('foo', 'bar');
 	$m->get('foo');
