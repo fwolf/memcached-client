@@ -15,7 +15,7 @@ class MemcachedClientTest extends \PHPUnit_Framework_TestCase
 {
     private $memcachedServerHost = '127.0.0.1';
     private $memcachedServerPort = 11211;
-    private $keyPrefix = 'test for memcached client';
+    private $keyPrefix = 'testForMemcachedClient.';
 
 
     protected function buildMock()

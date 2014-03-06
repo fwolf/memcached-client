@@ -284,7 +284,8 @@ class Memcached
      */
     public function delete($key, $time = 0)
     {
-        $this->writeSocket('delete ' . addslashes($key));
+        $keyString = $this->getKey($key);
+        $this->writeSocket("delete $keyString");
 
         $s = $this->readSocket();
         if ('DELETED' == $s) {
@@ -310,7 +311,8 @@ class Memcached
      */
     public function get($key, $cache_cb = null, $cas_token = null)
     {
-        $this->writeSocket('get ' . addslashes($key));
+        $keyString = $this->getKey($key);
+        $this->writeSocket("get $keyString");
 
         $s = $this->readSocket();
 
@@ -443,9 +445,10 @@ class Memcached
     public function set($key, $val, $expt = 0)
     {
         $valueString = serialize($val);
+        $keyString = $this->getKey($key);
 
         $this->writeSocket(
-            "set " . addslashes($key) . " 0 $expt " . strlen($valueString)
+            "set $keyString 0 $expt " . strlen($valueString)
         );
         $s = $this->writeSocket($valueString, true);
 
