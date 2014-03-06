@@ -9,7 +9,7 @@
  * @author      Fwolf <fwolf.aide+memcached-client@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-01-18
- * @version     1.0.0
+ * @version     1.1.0
  */
 class Memcached
 {
