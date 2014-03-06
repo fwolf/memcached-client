@@ -335,6 +335,18 @@ class Memcached
 
 
     /**
+     * Get item key
+     *
+     * @param   string  $key
+     * @return  string
+     */
+    public function getKey($key)
+    {
+        return addslashes($this->aOption[Memcached::OPT_PREFIX_KEY]) . $key;
+    }
+
+
+    /**
      * Get a memcached option value
      *
      * @param   int     $option
@@ -400,18 +412,6 @@ class Memcached
     public function getServerList()
     {
         return $this->aServer;
-    }
-
-
-    /**
-     * Got item key
-     *
-     * @param   string  $key
-     * @return  string
-     */
-    public function Key($key)
-    {
-        return addslashes($this->aOption[Memcached::OPT_PREFIX_KEY]) . $key;
     }
 
 

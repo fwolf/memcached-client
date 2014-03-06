@@ -135,6 +135,17 @@ class MemcachedClientTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testGetKey()
+    {
+        $cache = $this->buildMockWithServerConnected();
+
+        $this->assertEquals(
+            $this->keyPrefix . 'foobar',
+            $cache->getKey('foobar')
+        );
+    }
+
+
     public function testGetOption()
     {
         $cache = $this->buildMockWithServerConnected();
@@ -158,17 +169,6 @@ class MemcachedClientTest extends \PHPUnit_Framework_TestCase
         $cache = $this->buildMock();
 
         $this->assertFalse($cache->get('anything'));
-    }
-
-
-    public function testKey()
-    {
-        $cache = $this->buildMockWithServerConnected();
-
-        $this->assertEquals(
-            $this->keyPrefix . 'foobar',
-            $cache->Key('foobar')
-        );
     }
 
 
