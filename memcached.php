@@ -329,7 +329,7 @@ class Memcached
             $this->resultCode = Memcached::RES_SUCCESS;
             $this->resultMessage = '';
 
-            return $s_result;
+            return unserialize($s_result);
         }
     }
 
@@ -442,10 +442,12 @@ class Memcached
      */
     public function set($key, $val, $expt = 0)
     {
+        $valueString = serialize($val);
+
         $this->writeSocket(
-            'set ' . addslashes($key) . ' 0 ' . $expt . ' ' . strlen($val)
+            "set " . addslashes($key) . " 0 $expt " . strlen($valueString)
         );
-        $s = $this->writeSocket($val, true);
+        $s = $this->writeSocket($valueString, true);
 
         if ('STORED' == $s) {
             $this->resultCode = Memcached::RES_SUCCESS;

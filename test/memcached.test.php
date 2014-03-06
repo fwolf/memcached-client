@@ -186,6 +186,20 @@ class MemcachedClientTest extends \PHPUnit_Framework_TestCase
         $cache->set('foo', $s);
         $this->assertEquals($s, $cache->get('foo'));
 
+        // Array
+        $ar = array(
+            'bar1' => mt_rand(0, 50000),
+            'bar2' => mt_rand(0, 50000),
+        );
+        $cache->set('foo', $ar);
+        $this->assertEquals($ar, $cache->get('foo'));
+
+        // Object
+        $obj = new \stdClass;
+        $obj->bar = mt_rand(0, 50000);
+        $cache->set('foo', $obj);
+        $this->assertEquals($obj, $cache->get('foo'));
+
         $this->assertEquals(
             \Memcached::RES_SUCCESS,
             $cache->getResultCode()
