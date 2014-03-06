@@ -40,3 +40,7 @@ Supported method:
 -   set
 -   setOption
 -   setOptions
+
+
+Need disable memcached extension of PHP to run PHPUnit testcase.
+

@@ -183,7 +183,7 @@ class Memcached {
      * @return  boolean
      */
     public function addServer ($host, $port = 11211, $weight = 0) {
-        $key = $host . ':' . strval($port) . ':' . strval($weight);
+        $key = $this->getServerKey($host, $port, $weight);
         if (isset($this->aServer[$key])) {
             // Dup
             $this->iResultCode = Memcached::RES_FAILURE;
@@ -191,7 +191,7 @@ class Memcached {
             return false;
         }
         else {
-            $this->aServer[] = array(
+            $this->aServer[$key] = array(
                 'host'  => $host,
                 'port'  => $port,
                 'weight'    => $weight,
@@ -212,12 +212,16 @@ class Memcached {
     public function addServers ($servers) {
         foreach ((array)$servers as $svr) {
             $host = array_shift($svr);
+
             $port = array_shift($svr);
-            if (false === $port)
+            if (is_null($port)) {
                 $port = 11211;
+            }
+
             $weight = array_shift($svr);
-            if (false === $weight)
+            if (is_null($weight)) {
                 $weight = 0;
+            }
 
             $this->addServer($host, $port, $weight);
         }
@@ -241,8 +245,13 @@ class Memcached {
             if ($rs)
                 $this->rSocket = $rs;
             else {
-                $s = 'Connect to ' . $svr['host'] . ':' . $svr['port']
-                    . " error:\n\t[" . $error . '] ' . $errstr;
+                $key = $this->getServerKey(
+                    $svr['host'],
+                    $svr['port'],
+                    $svr['weight']
+                );
+                $s = "Connect to $key error:" . PHP_EOL .
+                    "    [$error] $errstr";
                 error_log($s);
             }
         }
@@ -277,8 +286,8 @@ class Memcached {
             return true;
         }
         else {
-            $this->iResultCode = Memcached::RES_FAILURE;
-            $this->sResultMessage = 'Delete fail.';
+            $this->iResultCode = Memcached::RES_NOTFOUND;
+            $this->sResultMessage = 'Delete fail, key not exists.';
             return false;
         }
     } // end of func delete
@@ -356,6 +365,20 @@ class Memcached {
     public function getResultMessage () {
         return $this->sResultMessage;
     } // end of func getResultMessage
+
+
+    /**
+     * Get key of server array
+     *
+     * @param   string  $host
+     * @param   int     $port
+     * @param   int     $weight
+     * @return  string
+     */
+    protected function getServerKey($host, $port = 11211, $weight = 0)
+    {
+        return "$host:$port:$weight";
+    }
 
 
     /**
