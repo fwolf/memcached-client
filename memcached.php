@@ -137,7 +137,7 @@ class Memcached
      *
      * @var int
      */
-    protected $iResultCode = 0;
+    protected $resultCode = 0;
 
 
     /**
@@ -145,7 +145,7 @@ class Memcached
      *
      * @var string
      */
-    protected $sResultMessage = '';
+    protected $resultMessage = '';
 
 
     /**
@@ -188,8 +188,8 @@ class Memcached
         $key = $this->getServerKey($host, $port, $weight);
         if (isset($this->aServer[$key])) {
             // Dup
-            $this->iResultCode = Memcached::RES_FAILURE;
-            $this->sResultMessage = 'Server duplicate.';
+            $this->resultCode = Memcached::RES_FAILURE;
+            $this->resultMessage = 'Server duplicate.';
             return false;
 
         } else {
@@ -263,13 +263,13 @@ class Memcached
         }
 
         if (is_null($this->rSocket)) {
-            $this->iResultCode = Memcached::RES_FAILURE;
-            $this->sResultMessage = 'No server avaliable.';
+            $this->resultCode = Memcached::RES_FAILURE;
+            $this->resultMessage = 'No server avaliable.';
             return false;
 
         } else {
-            $this->iResultCode = Memcached::RES_SUCCESS;
-            $this->sResultMessage = '';
+            $this->resultCode = Memcached::RES_SUCCESS;
+            $this->resultMessage = '';
             return true;
         }
     }
@@ -288,13 +288,13 @@ class Memcached
 
         $s = $this->readSocket();
         if ('DELETED' == $s) {
-            $this->iResultCode = Memcached::RES_SUCCESS;
-            $this->sResultMessage = '';
+            $this->resultCode = Memcached::RES_SUCCESS;
+            $this->resultMessage = '';
             return true;
 
         } else {
-            $this->iResultCode = Memcached::RES_NOTFOUND;
-            $this->sResultMessage = 'Delete fail, key not exists.';
+            $this->resultCode = Memcached::RES_NOTFOUND;
+            $this->resultMessage = 'Delete fail, key not exists.';
             return false;
         }
     }
@@ -315,8 +315,8 @@ class Memcached
         $s = $this->readSocket();
 
         if (is_null($s) || 'VALUE' != substr($s, 0, 5)) {
-            $this->iResultCode = Memcached::RES_FAILURE;
-            $this->sResultMessage = 'Get fail.';
+            $this->resultCode = Memcached::RES_FAILURE;
+            $this->resultMessage = 'Get fail.';
             return false;
 
         } else {
@@ -326,8 +326,8 @@ class Memcached
                 $s_result .= $s;
                 $s = $this->readSocket();
             }
-            $this->iResultCode = Memcached::RES_SUCCESS;
-            $this->sResultMessage = '';
+            $this->resultCode = Memcached::RES_SUCCESS;
+            $this->resultMessage = '';
 
             return $s_result;
         }
@@ -355,13 +355,13 @@ class Memcached
     public function getOption($option)
     {
         if (isset($this->option[$option])) {
-            $this->iResultCode = Memcached::RES_SUCCESS;
-            $this->sResultMessage = '';
+            $this->resultCode = Memcached::RES_SUCCESS;
+            $this->resultMessage = '';
             return $this->option[$option];
 
         } else {
-            $this->iResultCode = Memcached::RES_FAILURE;
-            $this->sResultMessage = 'Option not seted.';
+            $this->resultCode = Memcached::RES_FAILURE;
+            $this->resultMessage = 'Option not seted.';
             return false;
         }
     }
@@ -374,7 +374,7 @@ class Memcached
      */
     public function getResultCode()
     {
-        return $this->iResultCode;
+        return $this->resultCode;
     }
 
 
@@ -385,7 +385,7 @@ class Memcached
      */
     public function getResultMessage()
     {
-        return $this->sResultMessage;
+        return $this->resultMessage;
     }
 
 
@@ -448,13 +448,13 @@ class Memcached
         $s = $this->writeSocket($val, true);
 
         if ('STORED' == $s) {
-            $this->iResultCode = Memcached::RES_SUCCESS;
-            $this->sResultMessage = '';
+            $this->resultCode = Memcached::RES_SUCCESS;
+            $this->resultMessage = '';
             return true;
 
         } else {
-            $this->iResultCode = Memcached::RES_FAILURE;
-            $this->sResultMessage = 'Set fail.';
+            $this->resultCode = Memcached::RES_FAILURE;
+            $this->resultMessage = 'Set fail.';
             return false;
         }
     }
