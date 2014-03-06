@@ -284,9 +284,9 @@ class Memcached
      */
     public function delete($key, $time = 0)
     {
-        $this->SocketWrite('delete ' . addslashes($key));
+        $this->writeSocket('delete ' . addslashes($key));
 
-        $s = $this->SocketRead();
+        $s = $this->readSocket();
         if ('DELETED' == $s) {
             $this->iResultCode = Memcached::RES_SUCCESS;
             $this->sResultMessage = '';
@@ -310,9 +310,9 @@ class Memcached
      */
     public function get($key, $cache_cb = null, $cas_token = null)
     {
-        $this->SocketWrite('get ' . addslashes($key));
+        $this->writeSocket('get ' . addslashes($key));
 
-        $s = $this->SocketRead();
+        $s = $this->readSocket();
 
         if (is_null($s) || 'VALUE' != substr($s, 0, 5)) {
             $this->iResultCode = Memcached::RES_FAILURE;
@@ -321,10 +321,10 @@ class Memcached
 
         } else {
             $s_result = '';
-            $s = $this->SocketRead();
+            $s = $this->readSocket();
             while ('END' != $s) {
                 $s_result .= $s;
-                $s = $this->SocketRead();
+                $s = $this->readSocket();
             }
             $this->iResultCode = Memcached::RES_SUCCESS;
             $this->sResultMessage = '';
@@ -416,6 +416,23 @@ class Memcached
 
 
     /**
+     * Read from socket
+     *
+     * @return  string|null
+     */
+    protected function readSocket()
+    {
+        if (is_null($this->rSocket)) {
+            return null;
+        }
+
+        return trim(fgets($this->rSocket));
+    }
+
+
+
+
+    /**
      * Store an item
      *
      * @param   string  $key
@@ -425,10 +442,10 @@ class Memcached
      */
     public function set($key, $val, $expt = 0)
     {
-        $this->SocketWrite(
+        $this->writeSocket(
             'set ' . addslashes($key) . ' 0 ' . $expt . ' ' . strlen($val)
         );
-        $s = $this->SocketWrite($val, true);
+        $s = $this->writeSocket($val, true);
 
         if ('STORED' == $s) {
             $this->iResultCode = Memcached::RES_SUCCESS;
@@ -468,23 +485,6 @@ class Memcached
         $this->aOption = array_merge($this->aOption, $options);
         return true;
     }
-
-
-    /**
-     * Read from socket
-     *
-     * @return  string|null
-     */
-    protected function SocketRead()
-    {
-        if (is_null($this->rSocket)) {
-            return null;
-        }
-
-        return trim(fgets($this->rSocket));
-    }
-
-
     /**
      * Write data to socket
      *
@@ -492,7 +492,7 @@ class Memcached
      * @param   boolean $result     Need result/response
      * @return  mixed
      */
-    protected function SocketWrite($cmd, $result = false)
+    protected function writeSocket($cmd, $result = false)
     {
         if (is_null($this->rSocket)) {
             return false;
@@ -501,7 +501,7 @@ class Memcached
         fwrite($this->rSocket, $cmd . "\r\n");
 
         if (true == $result) {
-            return $this->SocketRead();
+            return $this->readSocket();
         }
 
         return true;
