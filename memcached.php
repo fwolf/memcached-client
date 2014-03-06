@@ -199,7 +199,7 @@ class Memcached
                 'weight'    => $weight,
             );
 
-            $this->Connect();
+            $this->connect();
             return true;
         }
     }
@@ -238,7 +238,7 @@ class Memcached
      *
      * @return  boolean
      */
-    protected function Connect()
+    protected function connect()
     {
         $rs = false;
 
