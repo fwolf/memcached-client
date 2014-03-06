@@ -163,7 +163,7 @@ class Memcached
      *
      * @var array
      */
-    protected $aServer = array();
+    protected $server = array();
 
 
     /**
@@ -186,14 +186,14 @@ class Memcached
     public function addServer($host, $port = 11211, $weight = 0)
     {
         $key = $this->getServerKey($host, $port, $weight);
-        if (isset($this->aServer[$key])) {
+        if (isset($this->server[$key])) {
             // Dup
             $this->resultCode = Memcached::RES_FAILURE;
             $this->resultMessage = 'Server duplicate.';
             return false;
 
         } else {
-            $this->aServer[$key] = array(
+            $this->server[$key] = array(
                 'host'  => $host,
                 'port'  => $port,
                 'weight'    => $weight,
@@ -242,7 +242,7 @@ class Memcached
     {
         $rs = false;
 
-        foreach ((array)$this->aServer as $svr) {
+        foreach ((array)$this->server as $svr) {
             $error = 0;
             $errstr = '';
             $rs = @fsockopen($svr['host'], $svr['port'], $error, $errstr);
@@ -406,12 +406,12 @@ class Memcached
     /**
      * Get list array of servers
      *
-     * @see     $aServer
+     * @see     $server
      * @return  array
      */
     public function getServerList()
     {
-        return $this->aServer;
+        return $this->server;
     }
 
 
