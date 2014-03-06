@@ -172,7 +172,7 @@ class Memcached
      * Point to last successful connect, ignore others
      * @var resource
      */
-    protected $rSocket = null;
+    protected $socket = null;
 
 
     /**
@@ -248,7 +248,7 @@ class Memcached
             $rs = @fsockopen($svr['host'], $svr['port'], $error, $errstr);
 
             if ($rs) {
-                $this->rSocket = $rs;
+                $this->socket = $rs;
 
             } else {
                 $key = $this->getServerKey(
@@ -262,7 +262,7 @@ class Memcached
             }
         }
 
-        if (is_null($this->rSocket)) {
+        if (is_null($this->socket)) {
             $this->resultCode = Memcached::RES_FAILURE;
             $this->resultMessage = 'No server avaliable.';
             return false;
@@ -422,11 +422,11 @@ class Memcached
      */
     protected function readSocket()
     {
-        if (is_null($this->rSocket)) {
+        if (is_null($this->socket)) {
             return null;
         }
 
-        return trim(fgets($this->rSocket));
+        return trim(fgets($this->socket));
     }
 
 
@@ -494,11 +494,11 @@ class Memcached
      */
     protected function writeSocket($cmd, $result = false)
     {
-        if (is_null($this->rSocket)) {
+        if (is_null($this->socket)) {
             return false;
         }
 
-        fwrite($this->rSocket, $cmd . "\r\n");
+        fwrite($this->socket, $cmd . "\r\n");
 
         if (true == $result) {
             return $this->readSocket();
