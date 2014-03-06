@@ -11,7 +11,8 @@
  * @since       2013-01-18
  * @version     1.0.0
  */
-class Memcached {
+class Memcached
+{
     // Predefined Constants
     // See: http://php.net/manual/en/memcached.constants.php
 
@@ -182,15 +183,16 @@ class Memcached {
      * @param   int     $weight
      * @return  boolean
      */
-    public function addServer ($host, $port = 11211, $weight = 0) {
+    public function addServer($host, $port = 11211, $weight = 0)
+    {
         $key = $this->getServerKey($host, $port, $weight);
         if (isset($this->aServer[$key])) {
             // Dup
             $this->iResultCode = Memcached::RES_FAILURE;
             $this->sResultMessage = 'Server duplicate.';
             return false;
-        }
-        else {
+
+        } else {
             $this->aServer[$key] = array(
                 'host'  => $host,
                 'port'  => $port,
@@ -200,7 +202,7 @@ class Memcached {
             $this->Connect();
             return true;
         }
-    } // end of fund addServer
+    }
 
 
     /**
@@ -209,7 +211,8 @@ class Memcached {
      * @param   array   $servers
      * @return  boolean
      */
-    public function addServers ($servers) {
+    public function addServers($servers)
+    {
         foreach ((array)$servers as $svr) {
             $host = array_shift($svr);
 
@@ -227,7 +230,7 @@ class Memcached {
         }
 
         return true;
-    } // end of func addServers
+    }
 
 
     /**
@@ -235,16 +238,19 @@ class Memcached {
      *
      * @return  boolean
      */
-    protected function Connect () {
+    protected function Connect()
+    {
         $rs = false;
 
         foreach ((array)$this->aServer as $svr) {
             $error = 0;
             $errstr = '';
             $rs = @fsockopen($svr['host'], $svr['port'], $error, $errstr);
-            if ($rs)
+
+            if ($rs) {
                 $this->rSocket = $rs;
-            else {
+
+            } else {
                 $key = $this->getServerKey(
                     $svr['host'],
                     $svr['port'],
@@ -260,13 +266,13 @@ class Memcached {
             $this->iResultCode = Memcached::RES_FAILURE;
             $this->sResultMessage = 'No server avaliable.';
             return false;
-        }
-        else {
+
+        } else {
             $this->iResultCode = Memcached::RES_SUCCESS;
             $this->sResultMessage = '';
             return true;
         }
-    } // end of func Connect
+    }
 
 
     /**
@@ -276,7 +282,8 @@ class Memcached {
      * @param   int     $time       Ignored
      * @return  boolean
      */
-    public function delete ($key, $time = 0) {
+    public function delete($key, $time = 0)
+    {
         $this->SocketWrite('delete ' . addslashes($key));
 
         $s = $this->SocketRead();
@@ -284,13 +291,13 @@ class Memcached {
             $this->iResultCode = Memcached::RES_SUCCESS;
             $this->sResultMessage = '';
             return true;
-        }
-        else {
+
+        } else {
             $this->iResultCode = Memcached::RES_NOTFOUND;
             $this->sResultMessage = 'Delete fail, key not exists.';
             return false;
         }
-    } // end of func delete
+    }
 
 
     /**
@@ -301,19 +308,19 @@ class Memcached {
      * @param   float   $cas_token          Ignored
      * @return  mixed
      */
-    public function get ($key, $cache_cb = null, $cas_token = null) {
+    public function get($key, $cache_cb = null, $cas_token = null)
+    {
         $this->SocketWrite('get ' . addslashes($key));
 
-        $s_result = '';
-        $s = '';
         $s = $this->SocketRead();
 
-        if ('VALUE' != substr($s, 0, 5)) {
+        if (is_null($s) || 'VALUE' != substr($s, 0, 5)) {
             $this->iResultCode = Memcached::RES_FAILURE;
             $this->sResultMessage = 'Get fail.';
             return false;
-        }
-        else {
+
+        } else {
+            $s_result = '';
             $s = $this->SocketRead();
             while ('END' != $s) {
                 $s_result .= $s;
@@ -321,10 +328,10 @@ class Memcached {
             }
             $this->iResultCode = Memcached::RES_SUCCESS;
             $this->sResultMessage = '';
-        }
 
-        return $s_result;
-    } // end of func get
+            return $s_result;
+        }
+    }
 
 
     /**
@@ -333,18 +340,19 @@ class Memcached {
      * @param   int     $option
      * @return  mixed
      */
-    public function getOption ($option) {
+    public function getOption($option)
+    {
         if (isset($this->aOption[$option])) {
             $this->iResultCode = Memcached::RES_SUCCESS;
             $this->sResultMessage = '';
             return $this->aOption[$option];
-        }
-        else {
+
+        } else {
             $this->iResultCode = Memcached::RES_FAILURE;
             $this->sResultMessage = 'Option not seted.';
             return false;
         }
-    } // end of func getOption
+    }
 
 
     /**
@@ -352,9 +360,10 @@ class Memcached {
      *
      * @return  int
      */
-    public function getResultCode () {
+    public function getResultCode()
+    {
         return $this->iResultCode;
-    } // end of func getResultCode
+    }
 
 
     /**
@@ -362,9 +371,10 @@ class Memcached {
      *
      * @return  string
      */
-    public function getResultMessage () {
+    public function getResultMessage()
+    {
         return $this->sResultMessage;
-    } // end of func getResultMessage
+    }
 
 
     /**
@@ -387,9 +397,10 @@ class Memcached {
      * @see     $aServer
      * @return  array
      */
-    public function getServerList () {
+    public function getServerList()
+    {
         return $this->aServer;
-    } // end of func getServerList
+    }
 
 
     /**
@@ -398,9 +409,10 @@ class Memcached {
      * @param   string  $key
      * @return  string
      */
-    public function Key ($key) {
+    public function Key($key)
+    {
         return addslashes($this->aOption[Memcached::OPT_PREFIX_KEY]) . $key;
-    } // end of func Key
+    }
 
 
     /**
@@ -411,23 +423,24 @@ class Memcached {
      * @param   int     $expt
      * @return  boolean
      */
-    public function set ($key, $val, $expt = 0) {
-        $this->SocketWrite('set ' . addslashes($key) . ' 0 '
-            . $expt . ' ' . strlen($val));
-        $this->SocketWrite($val);
+    public function set($key, $val, $expt = 0)
+    {
+        $this->SocketWrite(
+            'set ' . addslashes($key) . ' 0 ' . $expt . ' ' . strlen($val)
+        );
+        $s = $this->SocketWrite($val, true);
 
-        $s = $this->SocketRead();
         if ('STORED' == $s) {
             $this->iResultCode = Memcached::RES_SUCCESS;
             $this->sResultMessage = '';
             return true;
-        }
-        else {
+
+        } else {
             $this->iResultCode = Memcached::RES_FAILURE;
             $this->sResultMessage = 'Set fail.';
             return false;
         }
-    } // end of func set
+    }
 
 
     /**
@@ -437,10 +450,11 @@ class Memcached {
      * @param   mixed   $value
      * @return  boolean
      */
-    public function setOption ($option, $value) {
+    public function setOption($option, $value)
+    {
         $this->aOption[$option] = $value;
         return true;
-    } // end of func setOption
+    }
 
 
     /**
@@ -449,23 +463,26 @@ class Memcached {
      * @param   array   $options
      * @return  bollean
      */
-    public function setOptions ($options) {
+    public function setOptions($options)
+    {
         $this->aOption = array_merge($this->aOption, $options);
         return true;
-    } // end of func setOptions
+    }
 
 
     /**
      * Read from socket
      *
-     * @return  string
+     * @return  string|null
      */
-    protected function SocketRead () {
-        if (is_null($this->rSocket))
-            return '';
+    protected function SocketRead()
+    {
+        if (is_null($this->rSocket)) {
+            return null;
+        }
 
         return trim(fgets($this->rSocket));
-    } // end of func SocketRead
+    }
 
 
     /**
@@ -475,18 +492,18 @@ class Memcached {
      * @param   boolean $result     Need result/response
      * @return  mixed
      */
-    protected function SocketWrite ($cmd, $result = false) {
-        if (is_null($this->rSocket))
+    protected function SocketWrite($cmd, $result = false)
+    {
+        if (is_null($this->rSocket)) {
             return false;
+        }
 
         fwrite($this->rSocket, $cmd . "\r\n");
 
-        if (true == $result)
+        if (true == $result) {
             return $this->SocketRead();
+        }
 
         return true;
-    } // end of func SocketWrite
-
-
-} // end of class Memcached
-?>
+    }
+}

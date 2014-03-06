@@ -153,6 +153,14 @@ class MemcachedClientTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testGetWithoutServerConnected()
+    {
+        $cache = $this->buildMock();
+
+        $this->assertFalse($cache->get('anything'));
+    }
+
+
     public function testKey()
     {
         $cache = $this->buildMockWithServerConnected();
