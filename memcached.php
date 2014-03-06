@@ -106,7 +106,7 @@ class Memcached
      *
      * @var array
      */
-    protected $aOption = array(
+    protected $option = array(
         Memcached::OPT_COMPRESSION  => true,
         Memcached::OPT_SERIALIZER   => Memcached::SERIALIZER_PHP,
         Memcached::OPT_PREFIX_KEY   => '',
@@ -342,7 +342,7 @@ class Memcached
      */
     public function getKey($key)
     {
-        return addslashes($this->aOption[Memcached::OPT_PREFIX_KEY]) . $key;
+        return addslashes($this->option[Memcached::OPT_PREFIX_KEY]) . $key;
     }
 
 
@@ -354,10 +354,10 @@ class Memcached
      */
     public function getOption($option)
     {
-        if (isset($this->aOption[$option])) {
+        if (isset($this->option[$option])) {
             $this->iResultCode = Memcached::RES_SUCCESS;
             $this->sResultMessage = '';
-            return $this->aOption[$option];
+            return $this->option[$option];
 
         } else {
             $this->iResultCode = Memcached::RES_FAILURE;
@@ -469,7 +469,7 @@ class Memcached
      */
     public function setOption($option, $value)
     {
-        $this->aOption[$option] = $value;
+        $this->option[$option] = $value;
         return true;
     }
 
@@ -482,7 +482,7 @@ class Memcached
      */
     public function setOptions($options)
     {
-        $this->aOption = array_merge($this->aOption, $options);
+        $this->option = array_merge($this->option, $options);
         return true;
     }
     /**
