@@ -1,5 +1,5 @@
-..	-*- mode: rst -*-
-..	-*- coding: utf-8 -*-
+..  -*- mode: rst -*-
+..  -*- coding: utf-8 -*-
 
 
 ===========================================================================
@@ -20,23 +20,23 @@ Just as php_memcached extension, new Memcached object and etc.
 
 ::
 
-	$m = new Memcached();
-	$m->addServer('localhost', 11211);
+    $m = new Memcached();
+    $m->addServer('localhost', 11211);
 
-	$m->set('foo', 'bar');
-	$m->get('foo');
+    $m->set('foo', 'bar');
+    $m->get('foo');
 
 
 Supported method:
 
--	addServer
--	addServers
--	delete
--	get
--	getOption
--	getResultCode
--	getResultMessage
--	getServerList
--	set
--	setOption
--	setOptions
+-   addServer
+-   addServers
+-   delete
+-   get
+-   getOption
+-   getResultCode
+-   getResultMessage
+-   getServerList
+-   set
+-   setOption
+-   setOptions
