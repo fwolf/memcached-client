@@ -490,6 +490,34 @@ class Memcached
         $this->option = array_merge($this->option, $options);
         return true;
     }
+
+    /**
+     * Increment numeric item's value
+     *
+     * @param string $key           The key of the item to increment.
+     * @param int    $offset        The amount by which to increment the item's value.
+     * @param int    $initial_value The value to set the item to if it doesn't currently exist.
+     * @param int    $expiry        The expiry time to set on the item.
+     *
+     * @return mixed                Returns new item's value on success or FALSE on failure.
+     */
+    public function increment($key, $offset = 1, $initial_value = 0, $expiry = 0) 
+    {
+        if (($prevVal = $this->get($key))) {
+            if (!is_numeric($prevVal)) {
+                return false;
+            }
+
+            $newVal = $prevVal + $offset;
+        } else {
+            $newVal = $initial_value;
+        }
+
+        $this->set($key, $newVal, $expiry);
+
+        return $newVal;
+    }
+
     /**
      * Write data to socket
      *
