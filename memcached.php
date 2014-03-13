@@ -9,7 +9,7 @@
  * @author      Fwolf <fwolf.aide+memcached-client@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
  * @since       2013-01-18
- * @version     1.1.0
+ * @version     1.2.0
  */
 class Memcached
 {
@@ -501,7 +501,7 @@ class Memcached
      *
      * @return mixed                Returns new item's value on success or FALSE on failure.
      */
-    public function increment($key, $offset = 1, $initial_value = 0, $expiry = 0) 
+    public function increment($key, $offset = 1, $initial_value = 0, $expiry = 0)
     {
         if (($prevVal = $this->get($key))) {
             if (!is_numeric($prevVal)) {
