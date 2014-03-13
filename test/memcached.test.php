@@ -229,4 +229,59 @@ class MemcachedClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $cache->getOption('foo'));
         $this->assertEquals('b', $cache->getOption('bar'));
     }
+
+
+    public function testIncrement()
+    {
+        $cache = $this->buildMockWithServerConnected();
+
+        // Integer, default offset
+        $i = mt_rand(0, 50000);
+        $cache->set('foo', $i);
+        $iRes = $cache->increment('foo');
+        $this->assertEquals($i + 1, $iRes);
+        $this->assertEquals($i + 1, $cache->get('foo'));
+
+        // Integer, random offset
+        $i2 = mt_rand(0, 50000);
+        $offset = mt_rand(0, 500);
+        $cache->set('foo', $i2);
+        $i2Res = $cache->increment('foo', $offset);
+        $this->assertEquals($i2 + $offset, $i2Res);
+        $this->assertEquals($i2 + $offset, $cache->get('foo'));
+
+        // Integer, default initial value
+        $cache->delete('bar');
+        $newKeyRes = $cache->increment('bar');
+        $this->assertEquals(0, $newKeyRes);
+
+        // Integer, random initial value
+        $cache->delete('baz');
+        $initialValue = mt_rand(0, 500);
+        $offset2 = mt_rand(0, 500);
+        $newKey2Res = $cache->increment('baz', $offset2, $initialValue);
+        $this->assertEquals($initialValue, $newKey2Res);
+
+        // String
+        $s = 'foobar' . mt_rand(0, 50000);
+        $cache->set('foo', $s);
+        $sRes = $cache->increment('foo');
+        $this->assertFalse($sRes);
+
+        // Array
+        $ar = array(
+            'bar1' => mt_rand(0, 50000),
+            'bar2' => mt_rand(0, 50000),
+        );
+        $cache->set('foo', $ar);
+        $arRes = $cache->increment('foo');
+        $this->assertFalse($arRes);
+
+        // Object
+        $obj = new \stdClass;
+        $obj->bar = mt_rand(0, 50000);
+        $cache->set('foo', $obj);
+        $objRes = $cache->increment('foo');
+        $this->assertFalse($objRes);
+    }
 }

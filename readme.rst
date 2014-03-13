@@ -37,6 +37,7 @@ Supported method:
 -   getResultCode
 -   getResultMessage
 -   getServerList
+-   increment
 -   set
 -   setOption
 -   setOptions
