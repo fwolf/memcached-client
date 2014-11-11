@@ -25,7 +25,7 @@
   <testsuites>
     <testsuite name='Memcached Client Test Suite'>
       <file phpVersion='5.3.0' phpVersionOperator='>='
-        >./test/memcached.test.php</file>
+        >./test/memcached-client.test.php</file>
     </testsuite>
   </testsuites>
 
@@ -41,7 +41,7 @@
       <directory>./</directory>
       <exclude>
         <file>./test/bootstrap.php</file>
-        <file>./test/memcached.test.php</file>
+        <file>./test/memcached-client.test.php</file>
       </exclude>
     </whitelist>
   </filter>
