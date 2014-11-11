@@ -45,3 +45,5 @@ Supported method:
 
 Need disable memcached extension of PHP to run PHPUnit testcase.
 
+
+License: MIT
