@@ -7,9 +7,7 @@ namespace Fwlib\MemcachedClient\Test;
  * property $memcachedServerHost and $memcachedServerPort.
  *
  * @copyright   Copyright 2014 Fwolf
- * @author      Fwolf <fwolf.aide+memcached-client@gmail.com>
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL v3
- * @since       2014-03-06
  */
 class MemcachedClientTest extends \PHPUnit_Framework_TestCase
 {
